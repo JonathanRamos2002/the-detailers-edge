@@ -1,5 +1,5 @@
 import React from "react";
-import {Nav, NavLogo, NavLink, NavMenu} from "./NavbarElements";
+import {Nav, NavLogo, NavLink, NavMenu, ButtonWrapper, NavButton, CircleButton} from "./NavbarElements";
 import detailersEdgeLogo from "../assets/detailers_edge.jpg";
 
 const Navbar = () => {
@@ -9,20 +9,30 @@ const Navbar = () => {
                 <NavLogo to="/" activeStyle>
                     <img src={detailersEdgeLogo} alt="Detailers Edge" />
                 </NavLogo>
+
                 <NavMenu>
-                    <NavLink to="/about" activeStyle>
-                        About
+                    <NavLink to="/services" activeStyle>
+                        Services
+                    </NavLink>
+                    <NavLink to="/portfolio" activeStyle>
+                        Portfolio
+                    </NavLink>
+                    <NavLink to="/testimonials" activeStyle>
+                        Testimonials
                     </NavLink>
                     <NavLink to="/contact" activeStyle>
-                        Contact Us
-                    </NavLink>
-                    <NavLink to="/blogs" activeStyle>
-                        Blogs
-                    </NavLink>
-                    <NavLink to="/sign-up" activeStyle>
-                        Sign Up
+                        Contact
                     </NavLink>
                 </NavMenu>
+
+                <ButtonWrapper>
+                    <NavButton to="/booking">
+                        Book Now
+                    </NavButton>
+                    <CircleButton to="/sign-up">
+                        ?
+                    </CircleButton>
+                </ButtonWrapper>
             </Nav>
         </>
     );

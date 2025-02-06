@@ -6,9 +6,11 @@ import {
     Route,
 } from "react-router-dom";
 import Home from "./pages";
-import About from "./pages/about";
-import Blogs from "./pages/blogs";
+import Services from "./pages/services";
+import Portfolio from "./pages/portfolio";
 import SignUp from "./pages/signup";
+import Testimonials from "./pages/testimonials";
+import Booking from "./pages/booking";
 import Contact from "./pages/contact";
 
 
@@ -18,12 +20,14 @@ function App() {
       <Navbar />
       <Routes>
         <Route exact path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/Services" element={<Services />} />
         <Route
           path="/contact"
           element={<Contact />}
         />
-        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/Portfolio" element={<Portfolio />} />
+        <Route path="/Testimonials" element={<Testimonials />} />
+        <Route path="/Booking" element={<Booking />} />
         <Route
           path="/sign-up"
           element={<SignUp />}
