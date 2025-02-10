@@ -12,6 +12,7 @@
 - npm install firebase
 - npm install -g firebase-tools
 - npm i react-router-dom --save styled-components
+- npm install react-icons
 
 ## Running the development application 
 - npm run dev 

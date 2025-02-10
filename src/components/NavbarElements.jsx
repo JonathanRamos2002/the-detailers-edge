@@ -1,6 +1,7 @@
-import styled from 'styled-components';
-import { NavLink as Link } from 'react-router-dom';
-import colors from '../styles/colors';
+import styled from "styled-components";
+import { NavLink as Link } from "react-router-dom";
+import { darken } from "polished";
+import colors from "../styles/colors";
 
 export const Nav = styled.nav`
   background: ${colors.background};
@@ -10,6 +11,7 @@ export const Nav = styled.nav`
   align-items: center;
   padding: 0 20px;
   font-size: 1.2rem;
+  position: relative; /* Important for absolute positioning of mobile menu */
 `;
 
 export const NavLogo = styled(Link)`
@@ -27,58 +29,130 @@ export const NavLogo = styled(Link)`
 `;
 
 export const NavLink = styled(Link)`
-  color: ${colors.text};
+  color: ${colors.primary}; 
   text-decoration: none;
   padding: 0.5rem 1rem;
+  position: relative;
+  font-weight: 500; /* Slightly thinner than NavButton */
   transition: color 0.3s ease-in-out;
 
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    bottom: -3px;
+    left: 0;
+    background: ${colors.secondary}; 
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
   &:hover {
-    color: ${colors.accent};
+    color: ${colors.secondary}; 
   }
 `;
 
 export const NavMenu = styled.div`
   display: flex;
   justify-content: center;
-  flex-grow: 1;  /* Makes the menu take up available space */
-  gap: 2rem; /* Space between links */
+  flex-grow: 1;
+  gap: 2rem;
+
+  @media screen and (max-width: 830px) {
+    flex-direction: column;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background: ${colors.background};
+    text-align: center;
+    padding: 20px 0;
+    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+  }
 `;
 
 export const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem; /* Adds space between the buttons */
-  margin-left: auto; /* Pushes buttons to the right */
-`;
+  gap: 1rem;
+  margin-left: auto;
 
-export const NavButton = styled(Link)`
-  background: ${colors.accent};
-  color: ${colors.background};
-  padding: 0.5rem 1.5rem;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease-in-out;
-
-  &:hover {
-    background: darken(${colors.accent}, 10%);
+  @media screen and (max-width: 830px) {
+    display: none;  /* Hide buttons on mobile */
   }
 `;
 
+
+export const NavButton = styled(Link)`
+  background: transparent;
+  color: ${colors.text}; /* Match text color */
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    background: ${colors.secondary}; /* Accent color for the underline */
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  &:hover::after {
+    transform: scaleX(1); /* Expand underline on hover */
+  }
+
+  &:hover {
+    color: ${colors.secondary}; /* Accent color text on hover */
+  }
+`;
+
+
+
 export const CircleButton = styled(Link)`
-  background: ${colors.accent};
+  background: ${colors.primary};
   color: ${colors.background};
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   text-decoration: none;
   font-size: 1.2rem;
-  transition: background 0.3s ease-in-out;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  transition: all 0.3s ease-in-out;
 
   &:hover {
-    background: darken(${colors.accent}, 10%);
+    background: ${colors.secondary}; /* Swap colors on hover */
+    color: ${colors.background};
+    transform: scale(1.1); /* Slight scale effect */
+  }
+`;
+
+/* Mobile Menu Icon */
+export const MenuIcon = styled.div`
+  display: none; /* Hidden by default */
+
+  @media screen and (max-width: 830px) {
+    display: block;
+    position: absolute;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: ${colors.text};
   }
 `;
