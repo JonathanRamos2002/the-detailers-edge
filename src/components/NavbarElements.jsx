@@ -156,3 +156,39 @@ export const MenuIcon = styled.div`
     color: ${colors.text};
   }
 `;
+
+export const SideMenu = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0; /* Position it on the right side */
+  height: 100%;
+  width: 250px;
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+  backdrop-filter: blur(10px); /* Apply blur to the content behind */
+  box-shadow: -2px 0px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for the sides */
+  transform: ${({ isOpen }) => isOpen ? 'translateX(0)' : 'translateX(100%)'}; /* Slide in from the right */
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+`;
+
+export const SideMenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 2rem 2rem 2rem;
+  gap: 2rem;
+`;
+
+export const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  color: ${colors.text};
+  font-size: 2rem;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+
+  &:hover {
+    color: ${colors.secondary};
+  }
+`;
