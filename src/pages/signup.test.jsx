@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import SignUp from './SignUp';
+import SignUp from './signup';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // Mock Firebase
