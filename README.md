@@ -17,6 +17,9 @@
 ## Running the development application 
 - npm run dev 
 
+## Run Tests with Coverage
+- npm run coverage
+
 ## Deploying to Firebase Hosting
 When you're ready, deploy your web app
 Put your static files (e.g., HTML, CSS, JS) in your app's deploy directory (the default is "public"). Then, run this command from your app's root directory:
