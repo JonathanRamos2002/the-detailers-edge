@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1739301628872" clover="3.2.0">
-  <project timestamp="1739301628872" name="All files">
-    <metrics statements="381" coveredstatements="228" conditionals="34" coveredconditionals="22" methods="17" coveredmethods="9" elements="432" coveredelements="259" complexity="0" loc="381" ncloc="381" packages="4" files="13" classes="13"/>
+<coverage generated="1739321075848" clover="3.2.0">
+  <project timestamp="1739321075848" name="All files">
+    <metrics statements="381" coveredstatements="306" conditionals="39" coveredconditionals="26" methods="18" coveredmethods="10" elements="438" coveredelements="342" complexity="0" loc="381" ncloc="381" packages="4" files="13" classes="13"/>
     <package name="src">
       <metrics statements="59" coveredstatements="18" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="App.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/App.jsx">
+      <file name="App.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/App.jsx">
         <metrics statements="32" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
@@ -39,7 +39,7 @@
         <line num="38" count="0" type="stmt"/>
         <line num="40" count="0" type="stmt"/>
       </file>
-      <file name="firebase.js" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/firebase.js">
+      <file name="firebase.js" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/firebase.js">
         <metrics statements="18" coveredstatements="18" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -60,7 +60,7 @@
         <line num="19" count="1" type="stmt"/>
         <line num="22" count="1" type="stmt"/>
       </file>
-      <file name="main.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/main.jsx">
+      <file name="main.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/main.jsx">
         <metrics statements="9" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
@@ -74,95 +74,95 @@
       </file>
     </package>
     <package name="src.components">
-      <metrics statements="78" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
-      <file name="Navbar.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/components/Navbar.jsx">
-        <metrics statements="45" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="2" count="0" type="stmt"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="30" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="stmt"/>
-        <line num="35" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="stmt"/>
-        <line num="42" count="0" type="stmt"/>
-        <line num="43" count="0" type="stmt"/>
-        <line num="44" count="0" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="48" count="0" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="stmt"/>
-        <line num="51" count="0" type="stmt"/>
-        <line num="52" count="0" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
+      <metrics statements="78" coveredstatements="78" conditionals="7" coveredconditionals="4" methods="3" coveredmethods="1"/>
+      <file name="Navbar.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/components/Navbar.jsx">
+        <metrics statements="45" coveredstatements="45" conditionals="3" coveredconditionals="2" methods="3" coveredmethods="1"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="30" count="2" type="stmt"/>
+        <line num="33" count="2" type="stmt"/>
+        <line num="34" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="48" count="2" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="50" count="2" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
       </file>
-      <file name="NavbarElements.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/components/NavbarElements.jsx">
-        <metrics statements="33" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-        <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
-        <line num="2" count="0" type="stmt"/>
-        <line num="3" count="0" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="6" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="46" count="0" type="stmt"/>
-        <line num="56" count="0" type="stmt"/>
-        <line num="60" count="0" type="stmt"/>
-        <line num="72" count="0" type="stmt"/>
-        <line num="75" count="0" type="stmt"/>
-        <line num="79" count="0" type="stmt"/>
-        <line num="91" count="0" type="stmt"/>
-        <line num="93" count="0" type="stmt"/>
-        <line num="109" count="0" type="stmt"/>
-        <line num="119" count="0" type="stmt"/>
-        <line num="125" count="0" type="stmt"/>
-        <line num="126" count="0" type="stmt"/>
-        <line num="127" count="0" type="stmt"/>
-        <line num="140" count="0" type="stmt"/>
-        <line num="141" count="0" type="stmt"/>
-        <line num="147" count="0" type="stmt"/>
-        <line num="156" count="0" type="stmt"/>
-        <line num="160" count="0" type="stmt"/>
-        <line num="169" count="0" type="stmt"/>
-        <line num="174" count="0" type="stmt"/>
-        <line num="181" count="0" type="stmt"/>
-        <line num="184" count="0" type="stmt"/>
-        <line num="192" count="0" type="stmt"/>
+      <file name="NavbarElements.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/components/NavbarElements.jsx">
+        <metrics statements="33" coveredstatements="33" conditionals="4" coveredconditionals="2" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="72" count="1" type="stmt"/>
+        <line num="75" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="79" count="1" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="109" count="1" type="stmt"/>
+        <line num="119" count="1" type="stmt"/>
+        <line num="125" count="1" type="stmt"/>
+        <line num="126" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="140" count="1" type="stmt"/>
+        <line num="141" count="1" type="stmt"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="156" count="1" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="169" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="174" count="1" type="stmt"/>
+        <line num="181" count="1" type="stmt"/>
+        <line num="184" count="1" type="stmt"/>
+        <line num="192" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.pages">
       <metrics statements="236" coveredstatements="202" conditionals="30" coveredconditionals="22" methods="13" coveredmethods="9"/>
-      <file name="booking.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/booking.jsx">
+      <file name="booking.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/booking.jsx">
         <metrics statements="73" coveredstatements="73" conditionals="8" coveredconditionals="8" methods="3" coveredmethods="3"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -238,7 +238,7 @@
         <line num="88" count="12" type="stmt"/>
         <line num="90" count="1" type="stmt"/>
       </file>
-      <file name="contact.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/contact.jsx">
+      <file name="contact.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/contact.jsx">
         <metrics statements="9" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -250,7 +250,7 @@
         <line num="11" count="0" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
       </file>
-      <file name="index.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/index.jsx">
+      <file name="index.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/index.jsx">
         <metrics statements="36" coveredstatements="36" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -289,7 +289,7 @@
         <line num="110" count="3" type="stmt"/>
         <line num="112" count="1" type="stmt"/>
       </file>
-      <file name="portfolio.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/portfolio.jsx">
+      <file name="portfolio.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/portfolio.jsx">
         <metrics statements="5" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -297,7 +297,7 @@
         <line num="5" count="0" type="stmt"/>
         <line num="7" count="0" type="stmt"/>
       </file>
-      <file name="services.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/services.jsx">
+      <file name="services.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/services.jsx">
         <metrics statements="9" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -309,7 +309,7 @@
         <line num="11" count="0" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
       </file>
-      <file name="signup.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/signup.jsx">
+      <file name="signup.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/signup.jsx">
         <metrics statements="99" coveredstatements="93" conditionals="17" coveredconditionals="13" methods="5" coveredmethods="5"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -411,7 +411,7 @@
         <line num="113" count="16" type="stmt"/>
         <line num="115" count="1" type="stmt"/>
       </file>
-      <file name="testimonials.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/pages/testimonials.jsx">
+      <file name="testimonials.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/pages/testimonials.jsx">
         <metrics statements="5" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -422,7 +422,7 @@
     </package>
     <package name="src.styles">
       <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="colors.jsx" path="/Users/ayoposiolubamisaye/the-detailers-edge/src/styles/colors.jsx">
+      <file name="colors.jsx" path="/Users/jonathanramos/Developer/Websites/the-detailers-edge/src/styles/colors.jsx">
         <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
