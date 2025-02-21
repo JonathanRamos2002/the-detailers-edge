@@ -11,10 +11,7 @@ export const Nav = styled.nav`
   align-items: center;
   padding: 0 20px;
   font-size: 1.2rem;
-  position: fixed; 
-  width: 95%;
-  top: 0; /* Stick to the top */
-  z-index: ${({ isOpen }) => (isOpen ? "1000" : "998")}; /* Ensure it stays on top of other elements */
+  position: relative;
 `;
 
 export const NavLogo = styled(Link)`
