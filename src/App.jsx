@@ -12,6 +12,8 @@ import SignUp from "./pages/signup";
 import Testimonials from "./pages/testimonials";
 import Booking from "./pages/booking";
 import Contact from "./pages/contact";
+import Login from "./pages/login";
+import Profile from "./pages/profile";
 
 
 function App() {
@@ -28,10 +30,9 @@ function App() {
         <Route path="/Portfolio" element={<Portfolio />} />
         <Route path="/Testimonials" element={<Testimonials />} />
         <Route path="/Booking" element={<Booking />} />
-        <Route
-          path="/sign-up"
-          element={<SignUp />}
-        />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
         </Routes>
     </Router>
   );

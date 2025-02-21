@@ -11,7 +11,9 @@ export const Nav = styled.nav`
   align-items: center;
   padding: 0 20px;
   font-size: 1.2rem;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 `;
 
 export const NavLogo = styled(Link)`

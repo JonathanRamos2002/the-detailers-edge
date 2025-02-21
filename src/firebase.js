@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = { /* import.meta.env = process.env -> used because of vite */
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -17,6 +18,7 @@ const firebaseConfig = { /* import.meta.env = process.env -> used because of vit
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
-export { auth, analytics };
+export { auth, analytics, db };
 export default app;
