@@ -11,7 +11,10 @@ export const Nav = styled.nav`
   align-items: center;
   padding: 0 20px;
   font-size: 1.2rem;
-  position: relative; /* Important for absolute positioning of mobile menu */
+  position: fixed; 
+  width: 95%;
+  top: 0; /* Stick to the top */
+  z-index: ${({ isOpen }) => (isOpen ? "1000" : "998")}; /* Ensure it stays on top of other elements */
 `;
 
 export const NavLogo = styled(Link)`
@@ -164,7 +167,7 @@ export const SideMenu = styled.div`
   height: 100%;
   width: 250px;
   background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
-  backdrop-filter: blur(10px); /* Apply blur to the content behind */
+  backdrop-filter: blur(50px); /* Apply blur to the content behind */
   box-shadow: -2px 0px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for the sides */
   transform: ${({ isOpen }) => isOpen ? 'translateX(0)' : 'translateX(100%)'}; /* Slide in from the right */
   transition: transform 0.3s ease-in-out;

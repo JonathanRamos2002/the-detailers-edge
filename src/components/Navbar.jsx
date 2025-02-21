@@ -31,7 +31,7 @@ const Navbar = () => {
 
                 {/* Mobile Menu Toggle */}
                 <MenuIcon onClick={toggleSideMenu}>
-                    {isOpen ? <FaTimes /> : <FaBars />}
+                    {isSideMenuOpen ? <FaTimes /> : <FaBars />}
                 </MenuIcon>
             </Nav>
 
