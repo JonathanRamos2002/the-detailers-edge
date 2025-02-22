@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 import { setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -27,7 +27,23 @@ const Login = () => {
     }
   };
 
-  
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      if (user) {
+        navigate('/profile');
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('Google Sign-In failed. Please try again.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
+    }
+  };
+
 
   return (
     <div>
@@ -38,6 +54,7 @@ const Login = () => {
         <input placeholder='email' onChange={(e) => setEmail(e.target.value)}></input>
         <input placeholder='password' onChange={(e) => setPassword(e.target.value)}></input>
         <button onClick={handleLogin}>Log In</button>
+        <button onClick={handleGoogleSignIn}>Log In With Google</button>
 
     </div>
   );

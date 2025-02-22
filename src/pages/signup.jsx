@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Eye, EyeOff } from 'lucide-react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { Eye, EyeOff, Chrome } from 'lucide-react';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 import { setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -40,10 +40,33 @@ const Signup = () => {
     }
   };
 
+
+  const handleGoogleSignup = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      const user = auth.currentUser;
+      if (user) {
+        await setDoc(doc(db, 'User', user.uid), {
+          email: user.email,
+          firstName: user.displayName.split(' ')[0],
+          lastName: user.displayName.split(' ')[1]
+        });
+      }
+      navigate('/profile');
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('Google auth failed. Please try again.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
+    }
+  }
+  
   return (
     <SignupContainer>
       <SignupForm onSubmit={handleRegister}>
-        <h1>Sign Up!</h1>
+        <h1>Start Your Detailing Journey</h1>
         {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <Input 
           type="email" 
@@ -51,12 +74,17 @@ const Signup = () => {
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
         />
-        <Input 
-          type={showPassword ? "text" : "password"} 
-          placeholder="Password" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
-        />
+        <PasswordWrapper>
+          <Input 
+            type={showPassword ? "text" : "password"} 
+            placeholder="Password" 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+          />
+          <TogglePasswordButton type="button" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <EyeOff /> : <Eye />}
+          </TogglePasswordButton>
+        </PasswordWrapper>
         <Input 
           type="text" 
           placeholder="First Name" 
@@ -70,7 +98,16 @@ const Signup = () => {
           onChange={(e) => setLastName(e.target.value)} 
         />
         <Button type="submit">Register</Button>
-        <LoginButton onClick={() => navigate('/login')}>Already have an account? Log In</LoginButton>
+        <LoginContainer>
+          <p>Already have an account?</p>
+          <LoginLink onClick={() => navigate('/login')}>Log In</LoginLink>
+        </LoginContainer>
+        <Separator>
+          <Line />
+          <span>or</span>
+          <Line />
+        </Separator>
+        <GoogleButton onClick={handleGoogleSignup}>Sign in with Google</GoogleButton>
       </SignupForm>
     </SignupContainer>
   );
@@ -89,7 +126,7 @@ const SignupContainer = styled.div`
 const SignupForm = styled.form`
   background: ${colors.white};
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
@@ -106,7 +143,7 @@ const Input = styled.input`
   padding: 0.75rem;
   margin-bottom: 1rem;
   border: 2px solid ${colors.secondary};
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 1rem;
   box-sizing: border-box;
 
@@ -116,13 +153,32 @@ const Input = styled.input`
   }
 `;
 
+const PasswordWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const TogglePasswordButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: ${colors.secondary};
+
+  &:hover {
+    color: ${colors.accent};
+  }
+`;
+
 const Button = styled.button`
   width: 100%;
   padding: 0.75rem;
   background: ${colors.accent};
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -132,20 +188,59 @@ const Button = styled.button`
   }
 `;
 
-const LoginButton = styled.button`
+const LoginContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+
+  p {
+    margin-right: 0.5rem;
+    color: ${colors.secondary};
+  }
+`;
+
+const LoginLink = styled.span`
+  color: ${colors.accent};
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: ${colors.primary};
+  }
+`;
+
+const Separator = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+
+  span {
+    margin: 0 1rem;
+    color: ${colors.secondary};
+  }
+`;
+
+const Line = styled.div`
+  flex: 1;
+  height: 1px;
+  background: ${colors.secondary};
+`;
+
+const GoogleButton = styled.button`
   width: 100%;
   padding: 0.75rem;
-  background: ${colors.accent};
+  background: ${colors.google};
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s ease;
   margin-top: 1rem;
 
   &:hover {
-    background: ${colors.primary};
+    background: ${colors.googleDark};
   }
 `;
 
