@@ -20,12 +20,13 @@ const Login = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
-      console.log(user);
-      console.log("USER LOGGED IN!");
       navigate('/profile');
     } catch (error) {
-      console.log("USER NOT LOGGED IN!")
       console.error(error);
+      setErrorMessage('Login failed. Please try again.');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
     }
   };
 

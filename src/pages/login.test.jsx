@@ -1,19 +1,19 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Signup from './Signup';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import Login from './Login';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 // Mock Firebase Auth
 vi.mock('firebase/auth', async () => {
-  const actual = await vi.importActual('firebase/auth'); // Get actual module
+  const actual = await vi.importActual('firebase/auth');
 
   return {
     ...actual,
     getAuth: vi.fn(() => ({
       currentUser: null,
     })),
-    createUserWithEmailAndPassword: vi.fn().mockResolvedValue({
+    signInWithEmailAndPassword: vi.fn().mockResolvedValue({
       user: { uid: '12345', email: 'test@example.com' },
     }),
     signInWithPopup: vi.fn().mockResolvedValue({
@@ -26,43 +26,32 @@ vi.mock('firebase/auth', async () => {
   };
 });
 
-// Mock Firestore
-vi.mock("firebase/firestore", async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    getFirestore: vi.fn(), // Mock getFirestore properly
-  };
-});
-
 // Mock Router
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useNavigate: () => vi.fn()
+    useNavigate: () => vi.fn(),
   };
 });
 
-describe('Signup Component', () => {
+describe('Login Component', () => {
   const mockNavigate = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
     render(
       <BrowserRouter>
-        <Signup />
+        <Login />
       </BrowserRouter>
     );
   });
 
-  it('renders Signup form correctly', () => {
-    expect(screen.getByText('Start Your Detailing Journey')).toBeInTheDocument();
+  it('renders Login form correctly', () => {
+    expect(screen.getByText('Welcome Back')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('First Name')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Last Name')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /register/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
   });
 
   it('toggles password visibility', () => {
@@ -79,34 +68,28 @@ describe('Signup Component', () => {
   it('handles form input changes', () => {
     const emailInput = screen.getByPlaceholderText('Email');
     const passwordInput = screen.getByPlaceholderText('Password');
-    const firstNameInput = screen.getByPlaceholderText('First Name');
-    const lastNameInput = screen.getByPlaceholderText('Last Name');
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.change(firstNameInput, { target: { value: 'John' } });
-    fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
 
     expect(emailInput.value).toBe('test@example.com');
     expect(passwordInput.value).toBe('password123');
-    expect(firstNameInput.value).toBe('John');
-    expect(lastNameInput.value).toBe('Doe');
   });
 
-  it('handles signup errors correctly', async () => {
-    vi.mocked(createUserWithEmailAndPassword).mockRejectedValueOnce(new Error('Signup failed'));
+  it('handles login errors correctly', async () => {
+    vi.mocked(signInWithEmailAndPassword).mockRejectedValueOnce(new Error('Login failed'));
 
-    fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'wrong@example.com' } });
     fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'wrongpassword' } });
 
-    fireEvent.click(screen.getByRole('button', { name: /register/i }));
+    fireEvent.click(screen.getByRole('button', { name: /log in/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('Registration failed. Please try again.')).toBeInTheDocument();
+      expect(screen.getByText('Login failed. Please try again.')).toBeInTheDocument();
     });
   });
 
-  it('handles Google signup correctly', async () => {
+  it('handles Google login correctly', async () => {
     signInWithPopup.mockResolvedValueOnce({
       user: { displayName: 'John Doe', email: 'test@example.com', uid: '12345' },
     });
