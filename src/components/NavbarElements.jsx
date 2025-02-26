@@ -165,7 +165,7 @@ export const SideMenu = styled.div`
   right: 0; /* Position it on the right side */
   height: 100%;
   width: 250px;
-  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
   backdrop-filter: blur(50px); /* Apply blur to the content behind */
   box-shadow: -2px 0px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for the sides */
   transform: ${({ isOpen }) => isOpen ? 'translateX(0)' : 'translateX(100%)'}; /* Slide in from the right */
