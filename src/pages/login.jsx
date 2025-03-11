@@ -1,92 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Eye, EyeOff } from 'lucide-react';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
+import styled from 'styled-components';
 import colors from '../styles/colors';
-
-const Login = () => { 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
-
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      navigate('/profile');
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('Login failed. Please try again.');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 5000);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      if (user) {
-        navigate('/profile');
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('Google Sign-In failed. Please try again.');
-      setTimeout(() => {
-        setErrorMessage('');
-      }, 5000);
-    }
-  };
-
-
-  return (
-    <LoginContainer>
-      <LoginForm onSubmit={handleLogin}>
-        <h1>Welcome Back</h1>
-        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-        <Input 
-          type="email" 
-          placeholder="Email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-        />
-        <PasswordWrapper>
-          <Input 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-          />
-          <TogglePasswordButton type="button" onClick={() => setShowPassword(!showPassword)}>
-            {showPassword ? <EyeOff /> : <Eye />}
-          </TogglePasswordButton>
-        </PasswordWrapper>
-        <Button type="submit">Log In</Button>
-        <SignupContainer>
-          <p>Don't have an account?</p>
-          <SignupLink onClick={() => navigate('/sign-up')}>Sign Up</SignupLink>
-        </SignupContainer>
-        <Separator>
-          <Line />
-          <span>or</span>
-          <Line />
-        </Separator>
-        <GoogleButton onClick={handleGoogleSignIn}>Sign in with Google</GoogleButton>
-      </LoginForm>
-    </LoginContainer>
-  );
-};
-
-export default Login;
+import api from '../services/api';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -221,3 +138,96 @@ const ErrorMessage = styled.p`
   color: ${colors.error};
   margin-bottom: 1rem;
 `;
+
+const Login = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const { email, password } = formData;
+      
+      // Validate input
+      if (!email || !password) {
+        throw new Error('Please fill in all fields');
+      }
+
+      // Attempt to login
+      await api.login(email, password);
+      navigate('/profile');
+    } catch (error) {
+      setError(error.message || 'Failed to login. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await api.googleSignIn();
+      navigate('/profile');
+    } catch (error) {
+      setError(error.message || 'Failed to sign in with Google. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <LoginContainer>
+      <LoginForm onSubmit={handleSubmit}>
+        <h1>Welcome Back</h1>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        <Input 
+          type="email" 
+          placeholder="Email"
+          name="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
+        <PasswordWrapper>
+          <Input 
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            name="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
+          <TogglePasswordButton type="button" onClick={() => setShowPassword(!showPassword)}>
+            {showPassword ? <EyeOff /> : <Eye />}
+          </TogglePasswordButton>
+        </PasswordWrapper>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Log In'}
+        </Button>
+        <SignupContainer>
+          <p>Don't have an account?</p>
+          <SignupLink onClick={() => navigate('/sign-up')}>Sign Up</SignupLink>
+        </SignupContainer>
+        <Separator>
+          <Line />
+          <span>or</span>
+          <Line />
+        </Separator>
+        <GoogleButton type="button" onClick={handleGoogleSignIn} disabled={loading}>
+          {loading ? 'Signing in...' : 'Sign in with Google'}
+        </GoogleButton>
+      </LoginForm>
+    </LoginContainer>
+  );
+};
+
+export default Login;
