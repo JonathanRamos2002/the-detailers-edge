@@ -35,7 +35,7 @@ export const NavLink = styled(Link)`
   text-decoration: none;
   padding: 0.5rem 1rem;
   position: relative;
-  font-weight: 500; /* Slightly thinner than NavButton */
+  font-weight: 500;
   transition: color 0.3s ease-in-out;
 
   &::after {
@@ -74,7 +74,7 @@ export const NavMenu = styled.div`
     background: ${colors.background};
     text-align: center;
     padding: 20px 0;
-    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+    display: ${props => (props.$isOpen ? "flex" : "none")};
   }
 `;
 

@@ -17,7 +17,7 @@ const Navbar = () => {
                     <img src={detailersEdgeLogo} alt="Detailers Edge" />
                 </NavLogo>
 
-                <NavMenu isOpen={isOpen}>
+                <NavMenu $isOpen={isOpen}>
                     <NavLink to="/services">Services</NavLink>
                     <NavLink to="/portfolio">Portfolio</NavLink>
                     <NavLink to="/testimonials">Testimonials</NavLink>
@@ -36,17 +36,17 @@ const Navbar = () => {
             </Nav>
 
             {/* Side Menu */}
-            <SideMenu isOpen={isSideMenuOpen}>
+            <SideMenu $isOpen={isSideMenuOpen}>
                 <CloseButton onClick={toggleSideMenu}>
                     <FaTimes />
                 </CloseButton>
                 <SideMenuWrapper>
-                    <NavLink to="/services" activeStyle>Services</NavLink>
-                    <NavLink to="/portfolio" activeStyle>Portfolio</NavLink>
-                    <NavLink to="/testimonials" activeStyle>Testimonials</NavLink>
-                    <NavLink to="/contact" activeStyle>Contact</NavLink>
-                    <NavLink to="/booking" activeStyle>Book Now</NavLink>
-                    <NavLink to="/sign-up" activeStyle>Sign Up</NavLink>
+                    <NavLink to="/services">Services</NavLink>
+                    <NavLink to="/portfolio">Portfolio</NavLink>
+                    <NavLink to="/testimonials">Testimonials</NavLink>
+                    <NavLink to="/contact">Contact</NavLink>
+                    <NavLink to="/booking">Book Now</NavLink>
+                    <NavLink to="/sign-up">Sign Up</NavLink>
                 </SideMenuWrapper>
             </SideMenu>
         </>
