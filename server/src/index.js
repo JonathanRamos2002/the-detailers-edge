@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
     message: 'Welcome to The Detailers Edge API',
     endpoints: {
       api: '/api',
-      auth: '/api/auth'
+      auth: '/api/auth',
+      contact: '/api/contact'
     }
   });
 });
@@ -27,17 +28,22 @@ app.get('/api', (req, res) => {
     version: '1.0.0',
     endpoints: {
       auth: {
+        login: '/api/auth/login',
         profile: {
           get: '/api/auth/profile',
           put: '/api/auth/profile'
         }
+      },
+      contact: {
+        post: '/api/contact'
       }
     }
   });
 });
 
-// API Route for auth
+// API Routes
 app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/contact', require('./routes/contact.routes'));
 
 // Error handling 
 app.use((err, req, res, next) => {
@@ -45,8 +51,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start the server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-}); 
+});
