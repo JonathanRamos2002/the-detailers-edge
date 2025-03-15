@@ -14,7 +14,7 @@ import Booking from "./pages/booking";
 import Contact from "./pages/contact";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
-
+import AdminBookings from "./pages/admin/Bookings";
 
 function App() {
   return (
@@ -33,7 +33,8 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
-        </Routes>
+        <Route path="/admin/bookings" element={<AdminBookings />} />
+      </Routes>
     </Router>
   );
 };
