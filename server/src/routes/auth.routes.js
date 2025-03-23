@@ -6,27 +6,69 @@
 
 const express = require('express');
 const router = express.Router();
-const admin = require('../config/firebase-config');
+const { admin, db } = require('../config/firebase-config');
 const { authenticateToken } = require('../middleware/auth.middleware');
 
 // Login user
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    // Verify the user's credentials with Firebase Auth
-    const userRecord = await admin.auth().getUserByEmail(email);
-    // Return user data
-    res.json({
-      uid: userRecord.uid,
-      email: userRecord.email,
-      displayName: userRecord.displayName,
-      phoneNumber: userRecord.phoneNumber
+    res.json({ message: 'Login successful' });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// Create user profile (signup)
+router.post('/profile', authenticateToken, async (req, res) => {
+  try {
+    const { displayName, phoneNumber } = req.body;
+    const uid = req.user.uid;
+
+    console.log('Creating profile for user:', {
+      uid,
+      displayName,
+      phoneNumber,
+      email: req.user.email
+    });
+
+    // Create user profile in Firestore
+    const userRef = db.collection('User').doc(uid);
+    
+    // Check if user already exists
+    const userDoc = await userRef.get();
+    if (userDoc.exists) {
+      console.log('User profile already exists');
+      return res.status(409).json({ error: 'User profile already exists' });
+    }
+
+    // Create new profile
+    await userRef.set({
+      displayName,
+      phoneNumber,
+      email: req.user.email
+    });
+
+    console.log('User profile created successfully');
+
+    res.status(201).json({
+      message: 'User profile created successfully',
+      user: {
+        uid,
+        email: req.user.email,
+        displayName,
+        phoneNumber
+      }
     });
   } catch (error) {
-    console.error('Error logging in:', error);
-    res.status(401).json({ 
-      message: 'Invalid email or password',
-      error: error.message 
+    console.error('Create profile error details:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      error: 'Failed to create user profile',
+      details: error.message 
     });
   }
 });
@@ -34,13 +76,29 @@ router.post('/login', async (req, res) => {
 // Get user profile (GET REQUEST) - Authenticated/Protected Route
 router.get('/profile', authenticateToken, async (req, res) => {
   try {
-    const user = await admin.auth().getUser(req.user.uid);
-    res.json(user);
-    //console.log('User profile fetched successfully');
-    //console.log(user);
+    const uid = req.user.uid;
+    const userRef = db.collection('User').doc(uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      // Create profile if it doesn't exist (for Google sign-in users)
+      await userRef.set({
+        displayName: req.user.displayName || '',
+        email: req.user.email,
+        phoneNumber: req.user.phoneNumber || ''
+      });
+
+      return res.json({
+        displayName: req.user.displayName || '',
+        email: req.user.email,
+        phoneNumber: req.user.phoneNumber || ''
+      });
+    }
+
+    res.json(userDoc.data());
   } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Error fetching user profile' });
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Failed to get user profile' });
   }
 });
 
@@ -48,14 +106,47 @@ router.get('/profile', authenticateToken, async (req, res) => {
 router.put('/profile', authenticateToken, async (req, res) => {
   try {
     const { displayName, phoneNumber } = req.body;
-    const user = await admin.auth().updateUser(req.user.uid, {
+    const uid = req.user.uid;
+
+    console.log('Updating profile for user:', {
+      uid,
       displayName,
       phoneNumber
     });
-    res.json(user);
+
+    const userRef = db.collection('User').doc(uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ error: 'User profile not found' });
+    }
+
+    await userRef.update({
+      displayName,
+      phoneNumber,
+      updatedAt: new Date().toISOString()
+    });
+
+    // Get the updated profile
+    const updatedDoc = await userRef.get();
+    const updatedProfile = updatedDoc.data();
+
+    console.log('Profile updated successfully:', updatedProfile);
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: updatedProfile
+    });
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Error updating user profile' });
+    console.error('Update profile error:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      error: 'Failed to update user profile',
+      details: error.message 
+    });
   }
 });
 

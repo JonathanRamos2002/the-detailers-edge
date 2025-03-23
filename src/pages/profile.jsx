@@ -14,9 +14,13 @@ const ProfileContainer = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
-const ProfileHeader = styled.h1`
-  color: ${colors.primary};
+const ProfileHeader = styled.div`
   margin-bottom: 2rem;
+`;
+
+const ProfileTitle = styled.h1`
+  color: ${colors.primary};
+  margin: 0;
 `;
 
 const ProfileSection = styled.div`
@@ -25,25 +29,30 @@ const ProfileSection = styled.div`
 
 const ProfileField = styled.div`
   margin: 1rem 0;
+`;
+
+const Label = styled.label`
+  display: block;
+  color: ${colors.text};
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+`;
+
+const Value = styled.div`
+  color: ${colors.text};
+  padding: 0.5rem 0;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid ${colors.border};
+  border-radius: 4px;
+  font-size: 1rem;
   
-  label {
-    display: block;
-    color: ${colors.text};
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-  }
-  
-  input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid ${colors.border};
-    border-radius: 4px;
-    font-size: 1rem;
-    
-    &:focus {
-      outline: none;
-      border-color: ${colors.primary};
-    }
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary};
   }
 `;
 
@@ -71,12 +80,21 @@ const ErrorMessage = styled.div`
   margin: 1rem 0;
 `;
 
+const LogoutButton = styled(Button)`
+  background: ${colors.error};
+  margin-top: 1rem;
+
+  &:hover {
+    background: ${colors.errorDark};
+  }
+`;
+
 const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     displayName: '',
     phoneNumber: ''
@@ -90,15 +108,15 @@ const Profile = () => {
       }
 
       try {
-        const profileData = await api.getUserProfile();
-        setProfile(profileData);
+        const data = await api.getUserProfile();
+        setProfile(data);
         setFormData({
-          displayName: profileData.displayName || '',
-          phoneNumber: profileData.phoneNumber || ''
+          displayName: data.displayName || '',
+          phoneNumber: data.phoneNumber || ''
         });
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-        setError('Failed to load profile data');
+      } catch (error) {
+        setError('Failed to load profile');
+        console.error('Profile error:', error);
       } finally {
         setLoading(false);
       }
@@ -107,7 +125,7 @@ const Profile = () => {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -117,95 +135,94 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
+
     try {
-      const updatedProfile = await api.updateUserProfile(formData);
-      setProfile(updatedProfile);
-      setEditMode(false);
-      setError(null);
-    } catch (err) {
-      console.error('Error updating profile:', err);
+      await api.updateUserProfile(formData);
+      setProfile(prev => ({
+        ...prev,
+        ...formData
+      }));
+      setIsEditing(false);
+    } catch (error) {
       setError('Failed to update profile');
+      console.error('Update error:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+      navigate('/login');
+    } catch (error) {
+      setError('Failed to logout');
+      console.error('Logout error:', error);
+    }
+  };
+
   if (loading) {
-    return <ProfileContainer>Loading profile...</ProfileContainer>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <ProfileContainer>
-      <ErrorMessage>{error}</ErrorMessage>
-      <Button onClick={() => window.location.reload()}>Retry</Button>
-    </ProfileContainer>;
+    return <ErrorMessage>{error}</ErrorMessage>;
   }
 
   return (
     <ProfileContainer>
-      <ProfileHeader>My Profile</ProfileHeader>
-      
-      {editMode ? (
-        <form onSubmit={handleSubmit}>
-          <ProfileSection>
+      <ProfileHeader>
+        <ProfileTitle>Profile</ProfileTitle>
+      </ProfileHeader>
+      <ProfileSection>
+        {isEditing ? (
+          <form onSubmit={handleSubmit}>
             <ProfileField>
-              <label>Email</label>
-              <input type="email" value={profile.email} disabled />
-            </ProfileField>
-            
-            <ProfileField>
-              <label>Display Name</label>
-              <input
+              <Label>Name</Label>
+              <Input
                 type="text"
                 name="displayName"
                 value={formData.displayName}
-                onChange={handleInputChange}
-                placeholder="Enter your name"
+                onChange={handleChange}
               />
             </ProfileField>
-            
             <ProfileField>
-              <label>Phone Number</label>
-              <input
+              <Label>Phone</Label>
+              <Input
                 type="tel"
                 name="phoneNumber"
                 value={formData.phoneNumber}
-                onChange={handleInputChange}
-                placeholder="Enter your phone number"
+                onChange={handleChange}
               />
             </ProfileField>
-          </ProfileSection>
-          
-          <Button type="submit" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Changes'}
-          </Button>
-          <Button type="button" onClick={() => setEditMode(false)} style={{ marginLeft: '1rem' }}>
-            Cancel
-          </Button>
-        </form>
-      ) : (
-        <>
-          <ProfileSection>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Saving...' : 'Save Changes'}
+            </Button>
+            <Button type="button" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+          </form>
+        ) : (
+          <>
             <ProfileField>
-              <label>Email</label>
-              <div>{profile.email}</div>
+              <Label>Name</Label>
+              <Value>{profile?.displayName || 'Not set'}</Value>
             </ProfileField>
-            
             <ProfileField>
-              <label>Display Name</label>
-              <div>{profile.displayName || 'Not set'}</div>
+              <Label>Email</Label>
+              <Value>{profile?.email || 'Not set'}</Value>
             </ProfileField>
-            
             <ProfileField>
-              <label>Phone Number</label>
-              <div>{profile.phoneNumber || 'Not set'}</div>
+              <Label>Phone</Label>
+              <Value>{profile?.phoneNumber || 'Not set'}</Value>
             </ProfileField>
-          </ProfileSection>
-          
-          <Button onClick={() => setEditMode(true)}>Edit Profile</Button>
-        </>
-      )}
+            <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+          </>
+        )}
+        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+      </ProfileSection>
     </ProfileContainer>
   );
 };

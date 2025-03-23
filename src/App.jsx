@@ -8,7 +8,7 @@ import {
 import Home from "./pages";
 import Services from "./pages/services";
 import Portfolio from "./pages/portfolio";
-import SignUp from "./pages/signup";
+import SignUp from "./pages/sign-up";
 import Testimonials from "./pages/testimonials";
 import Booking from "./pages/booking";
 import Contact from "./pages/contact";
@@ -30,7 +30,7 @@ function App() {
         <Route path="/Portfolio" element={<Portfolio />} />
         <Route path="/Testimonials" element={<Testimonials />} />
         <Route path="/Booking" element={<Booking />} />
-        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin/bookings" element={<AdminBookings />} />

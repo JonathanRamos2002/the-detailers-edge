@@ -1,11 +1,21 @@
-import React, { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 import { Nav, NavLogo, NavLink, NavMenu, ButtonWrapper, NavButton, CircleButton, MenuIcon, SideMenu, SideMenuWrapper, CloseButton } from "./NavbarElements";
 import detailersEdgeLogo from "../assets/detailers_edge.jpg";
+import { auth } from "../firebase";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setUser(user);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const toggleMenu = () => setIsOpen(!isOpen);
     const toggleSideMenu = () => setIsSideMenuOpen(!isSideMenuOpen);
@@ -26,7 +36,9 @@ const Navbar = () => {
 
                 <ButtonWrapper>
                     <NavButton to="/booking">Book Now</NavButton>
-                    <CircleButton to="/sign-up">?</CircleButton>
+                    <CircleButton to={user ? "/profile" : "/sign-up"}>
+                        {user ? <FaUser /> : "?"}
+                    </CircleButton>
                 </ButtonWrapper>
 
                 {/* Mobile Menu Toggle */}
@@ -46,7 +58,11 @@ const Navbar = () => {
                     <NavLink to="/testimonials">Testimonials</NavLink>
                     <NavLink to="/contact">Contact</NavLink>
                     <NavLink to="/booking">Book Now</NavLink>
-                    <NavLink to="/sign-up">Sign Up</NavLink>
+                    {user ? (
+                        <NavLink to="/profile">Profile</NavLink>
+                    ) : (
+                        <NavLink to="/sign-up">Sign Up</NavLink>
+                    )}
                 </SideMenuWrapper>
             </SideMenu>
         </>
