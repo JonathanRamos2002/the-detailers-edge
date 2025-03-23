@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+    "date-fns": "^4.1.0",
     "firebase": "^11.2.0",
     "lucide-react": "^0.475.0",
     "polished": "^4.3.1",
