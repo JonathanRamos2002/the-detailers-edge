@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const admin = require('../config/firebase-config');
+const { db } = require('../config/firebase-config');
+const { FieldValue } = require('firebase-admin/firestore');
 
 // Contact form endpoint
 router.post('/', async (req, res) => {
@@ -25,13 +26,13 @@ router.post('/', async (req, res) => {
     }
 
     // Store contact form submission in Firebase
-    const contactRef = admin.firestore().collection('contact_submissions');
+    const contactRef = db.collection('contact_submissions');
     const submission = await contactRef.add({
       name,
       email,
       subject,
       message,
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      timestamp: FieldValue.serverTimestamp(),
       status: 'unread'
     });
 
