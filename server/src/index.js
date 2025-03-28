@@ -17,7 +17,8 @@ app.get('/', (req, res) => {
     endpoints: {
       api: '/api',
       auth: '/api/auth',
-      contact: '/api/contact'
+      contact: '/api/contact',
+      testimonials: '/api/testimonials'
     }
   });
 });
@@ -36,6 +37,12 @@ app.get('/api', (req, res) => {
       },
       contact: {
         post: '/api/contact'
+      },
+      testimonials: {
+        get: '/api/testimonials',
+        post: '/api/testimonials',
+        updateStatus: '/api/testimonials/:id/status',
+        delete: '/api/testimonials/:id'
       }
     }
   });
@@ -44,6 +51,7 @@ app.get('/api', (req, res) => {
 // API Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/contact', require('./routes/contact.routes'));
+app.use('/api/testimonials', require('./routes/testimonials.routes'));
 
 // Error handling 
 app.use((err, req, res, next) => {
