@@ -19,7 +19,8 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       contact: '/api/contact',
       testimonials: '/api/testimonials',
-      portfolio: '/api/portfolio'
+      portfolio: '/api/portfolio',
+      services: '/api/services'
     }
   });
 });
@@ -49,6 +50,12 @@ app.get('/api', (req, res) => {
         get: '/api/portfolio',
         upload: '/api/portfolio/upload',
         delete: '/api/portfolio/:id'
+      },
+      services: {
+        get: '/api/services',
+        post: '/api/services',
+        put: '/api/services/:id',
+        delete: '/api/services/:id'
       }
     }
   });
@@ -59,6 +66,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/portfolio', require('./routes/portfolio.routes'));
 app.use('/api/contact', require('./routes/contact.routes'));
 app.use('/api/testimonials', require('./routes/testimonials.routes'));
+app.use('/api/services', require('./routes/services.routes'));
 
 // Error handling 
 app.use((err, req, res, next) => {

@@ -17,6 +17,7 @@ import Login from "./pages/login";
 import Profile from "./pages/profile";
 import AdminBookings from "./pages/admin/Bookings";
 import PortfolioManagement from "./pages/admin/PortfolioManagement";
+import ServicesManagement from "./pages/admin/ServicesManagement";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/portfolio" element={<PortfolioManagement />} />
+          <Route path="/admin/services" element={<ServicesManagement />} />
         </Routes>
       </Router>
     </AuthProvider>
