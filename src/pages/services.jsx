@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { IoCarSport } from "react-icons/io5";
 import { FaArrowRight } from "react-icons/fa";
@@ -182,6 +183,7 @@ const ErrorMessage = styled.div`
 `;
 
 const Services = () => {
+  const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -200,6 +202,10 @@ const Services = () => {
 
     fetchServices();
   }, []);
+
+  const handleBookNow = () => {
+    navigate('/booking');
+  };
 
   if (loading) {
     return <LoadingContainer>Loading services...</LoadingContainer>;
@@ -232,7 +238,7 @@ const Services = () => {
                 ))}
               </ServiceFeatures>
               <ServicePrice>${service.price}</ServicePrice>
-              <BookNowButton>
+              <BookNowButton onClick={handleBookNow}>
                 Book Now
                 <FaArrowRight />
               </BookNowButton>

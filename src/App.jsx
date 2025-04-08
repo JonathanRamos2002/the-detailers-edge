@@ -18,6 +18,7 @@ import Profile from "./pages/profile";
 import AdminBookings from "./pages/admin/Bookings";
 import PortfolioManagement from "./pages/admin/PortfolioManagement";
 import ServicesManagement from "./pages/admin/ServicesManagement";
+import Dashboard from "./pages/admin/Dashboard";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/bookings" element={<AdminBookings />} />
           <Route path="/admin/portfolio" element={<PortfolioManagement />} />
           <Route path="/admin/services" element={<ServicesManagement />} />

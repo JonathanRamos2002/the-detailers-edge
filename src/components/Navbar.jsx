@@ -36,7 +36,7 @@ const Navbar = () => {
 
                 <ButtonWrapper>
                     <NavButton to="/booking">Book Now</NavButton>
-                    <CircleButton to={user ? "/profile" : "/sign-up"}>
+                    <CircleButton to={user ? "/profile" : "/login"}>
                         {user ? <FaUser /> : "?"}
                     </CircleButton>
                 </ButtonWrapper>
@@ -61,7 +61,7 @@ const Navbar = () => {
                     {user ? (
                         <NavLink to="/profile">Profile</NavLink>
                     ) : (
-                        <NavLink to="/sign-up">Sign Up</NavLink>
+                        <NavLink to="/login">Login</NavLink>
                     )}
                 </SideMenuWrapper>
             </SideMenu>
