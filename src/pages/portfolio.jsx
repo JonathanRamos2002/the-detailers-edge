@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import colors from "../styles/colors";
-import { getOptimizedImageUrl } from "../config/cloudinary";
+import axios from "axios";
+import { API_BASE_URL } from "../config/api";
 
 const PortfolioContainer = styled.div`
     max-width: 1400px;
@@ -55,82 +56,73 @@ const PortfolioItem = styled.div`
     }
 `;
 
+const LoadingContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+`;
+
+const ErrorMessage = styled.div`
+    color: ${colors.error};
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+`;
+
 const Portfolio = () => {
-    const portfolioItems = [
-        {
-            id: 1,
-            image: getOptimizedImageUrl('portfolio/car-detail-1', { width: 800, quality: 80 }),
-            title: "Exterior Detailing",
-            description: "Complete paint correction and ceramic coating"
-        },
-        {
-            id: 2,
-            image: getOptimizedImageUrl('portfolio/car-detail-2', { width: 800, quality: 80 }),
-            title: "Interior Deep Clean",
-            description: "Professional interior detailing"
-        },
-        {
-            id: 3,
-            image: getOptimizedImageUrl('portfolio/car-detail-3', { width: 800, quality: 80 }),
-            title: "Paint Protection",
-            description: "PPF installation and maintenance"
-        },
-        {
-            id: 4,
-            image: getOptimizedImageUrl('portfolio/car-detail-4', { width: 800, quality: 80 }),
-            title: "Wheel Detailing",
-            description: "Complete wheel and tire care"
-        },
-        {
-            id: 5,
-            image: getOptimizedImageUrl('portfolio/car-detail-5', { width: 800, quality: 80 }),
-            title: "Headlight Restoration",
-            description: "Professional headlight restoration service"
-        },
-        {
-            id: 6,
-            image: getOptimizedImageUrl('portfolio/car-detail-6', { width: 800, quality: 80 }),
-            title: "Engine Bay Detailing",
-            description: "Complete engine bay cleaning and dressing"
-        },
-        {
-            id: 7,
-            image: getOptimizedImageUrl('portfolio/car-detail-7', { width: 800, quality: 80 }),
-            title: "Paint Correction",
-            description: "Multi-stage paint correction process"
-        },
-        {
-            id: 8,
-            image: getOptimizedImageUrl('portfolio/car-detail-8', { width: 800, quality: 80 }),
-            title: "Glass Treatment",
-            description: "Professional glass cleaning and protection"
-        },
-        {
-            id: 9,
-            image: getOptimizedImageUrl('portfolio/car-detail-9', { width: 800, quality: 80 }),
-            title: "Trim Restoration",
-            description: "Plastic and rubber trim restoration"
-        },
-        {
-            id: 10,
-            image: getOptimizedImageUrl('portfolio/car-detail-10', { width: 800, quality: 80 }),
-            title: "Full Detail Package",
-            description: "Complete interior and exterior detailing"
+    const [images, setImages] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        fetchPortfolioImages();
+    }, []);
+
+    const fetchPortfolioImages = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/portfolio`);
+            setImages(response.data || []);
+        } catch (error) {
+            console.error('Error fetching portfolio images:', error);
+            setError('Failed to load portfolio images. Please try again later.');
+        } finally {
+            setIsLoading(false);
         }
-    ];
+    };
+
+    if (isLoading) {
+        return (
+            <PortfolioContainer>
+                <LoadingContainer>
+                    <p>Loading portfolio images...</p>
+                </LoadingContainer>
+            </PortfolioContainer>
+        );
+    }
+
+    if (error) {
+        return (
+            <PortfolioContainer>
+                <ErrorMessage>{error}</ErrorMessage>
+            </PortfolioContainer>
+        );
+    }
 
     return (
         <PortfolioContainer>
             <PortfolioHeader>
                 <h1>Our Portfolio</h1>
-                <p>
-                    Explore our collection of automotive detailing projects. Each image represents our commitment to excellence in automotive care.
-                </p>
+                <p>Take a look at some of our recent work and see the difference our detailing services can make.</p>
             </PortfolioHeader>
             <PortfolioGrid>
-                {portfolioItems.map((item) => (
-                    <PortfolioItem key={item.id}>
-                        <img src={item.image} alt={item.title} loading="lazy" />
+                {images.map((image) => (
+                    <PortfolioItem key={image.id}>
+                        <img 
+                            src={image.url} 
+                            alt={image.title} 
+                            loading="lazy"
+                        />
                     </PortfolioItem>
                 ))}
             </PortfolioGrid>

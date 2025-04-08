@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
+    "axios": "^1.8.4",
     "cloudinary": "^2.6.0",
     "date-fns": "^4.1.0",
     "firebase": "^11.2.0",

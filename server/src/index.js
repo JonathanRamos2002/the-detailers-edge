@@ -18,7 +18,8 @@ app.get('/', (req, res) => {
       api: '/api',
       auth: '/api/auth',
       contact: '/api/contact',
-      testimonials: '/api/testimonials'
+      testimonials: '/api/testimonials',
+      portfolio: '/api/portfolio'
     }
   });
 });
@@ -43,6 +44,11 @@ app.get('/api', (req, res) => {
         post: '/api/testimonials',
         updateStatus: '/api/testimonials/:id/status',
         delete: '/api/testimonials/:id'
+      },
+      portfolio: {
+        get: '/api/portfolio',
+        upload: '/api/portfolio/upload',
+        delete: '/api/portfolio/:id'
       }
     }
   });
@@ -50,6 +56,7 @@ app.get('/api', (req, res) => {
 
 // API Routes
 app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/portfolio', require('./routes/portfolio.routes'));
 app.use('/api/contact', require('./routes/contact.routes'));
 app.use('/api/testimonials', require('./routes/testimonials.routes'));
 
