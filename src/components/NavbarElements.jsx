@@ -162,15 +162,21 @@ export const MenuIcon = styled.div`
 export const SideMenu = styled.div`
   position: fixed;
   top: 0;
-  right: 0; /* Position it on the right side */
+  right: 0;
   height: 100%;
   width: 250px;
-  background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-  backdrop-filter: blur(50px); /* Apply blur to the content behind */
-  box-shadow: -2px 0px 15px rgba(0, 0, 0, 0.2); /* Soft shadow for the sides */
-  transform: ${({ isOpen }) => isOpen ? 'translateX(0)' : 'translateX(100%)'}; /* Slide in from the right */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: -2px 0px 15px rgba(0, 0, 0, 0.2);
+  transform: ${({ $isOpen }) => $isOpen ? 'translateX(0)' : 'translateX(100%)'};
   transition: transform 0.3s ease-in-out;
   z-index: 999;
+  display: none;
+
+  @media screen and (max-width: 830px) {
+    display: block;
+  }
 `;
 
 export const SideMenuWrapper = styled.div`

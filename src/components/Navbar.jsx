@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaUserAltSlash } from "react-icons/fa";
 import { Nav, NavLogo, NavLink, NavMenu, ButtonWrapper, NavButton, CircleButton, MenuIcon, SideMenu, SideMenuWrapper, CloseButton } from "./NavbarElements";
 import detailersEdgeLogo from "../assets/detailers_edge.jpg";
 import { auth } from "../firebase";
@@ -18,7 +18,10 @@ const Navbar = () => {
     }, []);
 
     const toggleMenu = () => setIsOpen(!isOpen);
-    const toggleSideMenu = () => setIsSideMenuOpen(!isSideMenuOpen);
+    const toggleSideMenu = () => {
+        setIsSideMenuOpen(!isSideMenuOpen);
+        document.body.style.overflow = !isSideMenuOpen ? 'hidden' : 'auto';
+    };
 
     return (
         <>
@@ -37,7 +40,7 @@ const Navbar = () => {
                 <ButtonWrapper>
                     <NavButton to="/booking">Book Now</NavButton>
                     <CircleButton to={user ? "/profile" : "/login"}>
-                        {user ? <FaUser /> : "?"}
+                        {user ? <FaUser /> : <FaUserAltSlash />}
                     </CircleButton>
                 </ButtonWrapper>
 
@@ -53,15 +56,15 @@ const Navbar = () => {
                     <FaTimes />
                 </CloseButton>
                 <SideMenuWrapper>
-                    <NavLink to="/services">Services</NavLink>
-                    <NavLink to="/portfolio">Portfolio</NavLink>
-                    <NavLink to="/testimonials">Testimonials</NavLink>
-                    <NavLink to="/contact">Contact</NavLink>
-                    <NavLink to="/booking">Book Now</NavLink>
+                    <NavLink to="/services" onClick={toggleSideMenu}>Services</NavLink>
+                    <NavLink to="/portfolio" onClick={toggleSideMenu}>Portfolio</NavLink>
+                    <NavLink to="/testimonials" onClick={toggleSideMenu}>Testimonials</NavLink>
+                    <NavLink to="/contact" onClick={toggleSideMenu}>Contact</NavLink>
+                    <NavLink to="/booking" onClick={toggleSideMenu}>Book Now</NavLink>
                     {user ? (
-                        <NavLink to="/profile">Profile</NavLink>
+                        <NavLink to="/profile" onClick={toggleSideMenu}>Profile</NavLink>
                     ) : (
-                        <NavLink to="/login">Login</NavLink>
+                        <NavLink to="/login" onClick={toggleSideMenu}>Login</NavLink>
                     )}
                 </SideMenuWrapper>
             </SideMenu>
