@@ -6,7 +6,17 @@ const admin = require('./config/firebase-config');
 const app = express();
 
 // Cors allows frontend to call the API
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Vite default port local host
+    'https://the-detailers-edge.vercel.app', // Vercel domain
+    'https://the-detailers-edge-4toh.onrender.com' // Render domain
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
