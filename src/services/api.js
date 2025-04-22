@@ -1,7 +1,10 @@
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+// Set API URL based on environment
+const API_URL = import.meta.env.PROD 
+  ? import.meta.env.VITE_API_URL 
+  : 'http://localhost:5001/api';
 
 const getAuthToken = async () => {
   const user = auth.currentUser;
