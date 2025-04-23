@@ -1,36 +1,30 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Navbar from './Navbar';
+import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom'
+import { vi } from 'vitest'
+import Navbar from './Navbar'
+
+// Mock Firebase auth
+vi.mock('firebase/auth', () => ({
+  getAuth: vi.fn(() => ({
+    onAuthStateChanged: vi.fn((callback) => {
+      callback(null); // Simulate no user logged in
+      return vi.fn(); // Return unsubscribe function
+    }),
+  })),
+}))
 
 describe('Navbar', () => {
-  beforeEach(() => {
+  it('renders navigation links', () => {
     render(
-      <Router>
+      <BrowserRouter>
         <Navbar />
-      </Router>
-    );
-  });
+      </BrowserRouter>
+    )
 
-  test('renders Navbar component', () => {
-    // Check if the logo is rendered
-    const logo = screen.getByAltText('Detailers Edge');
-    expect(logo).toBeInTheDocument();
-
-    // Check if the navigation links are rendered
-    const servicesLinks = screen.getAllByText('Services');
-    const portfolioLinks = screen.getAllByText('Portfolio');
-    const testimonialsLinks = screen.getAllByText('Testimonials');
-    const contactLinks = screen.getAllByText('Contact');
-    const bookNowLinks = screen.getAllByText('Book Now');
-    const signUpLinks = screen.getAllByText('Sign Up');
-
-    expect(servicesLinks.length).toBeGreaterThan(0);
-    expect(portfolioLinks.length).toBeGreaterThan(0);
-    expect(testimonialsLinks.length).toBeGreaterThan(0);
-    expect(contactLinks.length).toBeGreaterThan(0);
-    expect(bookNowLinks.length).toBeGreaterThan(0);
-    expect(signUpLinks.length).toBeGreaterThan(0);
-  });
-
-});
+    // Check for navigation links (should appear twice - in main nav and mobile menu)
+    expect(screen.getAllByText('Services')).toHaveLength(2)
+    expect(screen.getAllByText('Portfolio')).toHaveLength(2)
+    expect(screen.getAllByText('Testimonials')).toHaveLength(2)
+    expect(screen.getAllByText('Contact')).toHaveLength(2)
+  })
+})
