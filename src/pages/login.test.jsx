@@ -1,19 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect } from 'vitest';
+import { vi } from 'vitest';
 import Login from './login';
 
-describe('Login Component', () => {
-  it('renders login form correctly', () => {
+// Mock Firebase auth
+vi.mock('../firebase', () => ({
+  auth: {
+    signInWithEmailAndPassword: vi.fn(),
+    signInWithPopup: vi.fn(),
+    GoogleAuthProvider: vi.fn()
+  }
+}));
+
+describe('Login Page', () => {
+  it('renders login form', () => {
     render(
       <BrowserRouter>
         <Login />
       </BrowserRouter>
     );
-
-    expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Log In/i })).toBeInTheDocument();
+    
+    // Check if basic login elements are present
+    expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(screen.getByText('Log In')).toBeInTheDocument();
   });
 });
