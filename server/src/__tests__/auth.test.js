@@ -1,261 +1,138 @@
-// Mock environment variables
-process.env.PORT = '5001';
-
 const request = require('supertest');
-const app = require('../index');
-const admin = require('firebase-admin');
+const app = require('../tests/setup');
+const { admin } = require('../config/firebase-config');
 
-// Mock Firebase Admin
-jest.mock('firebase-admin', () => ({
-  initializeApp: jest.fn(),
-  credential: {
-    cert: jest.fn()
-  },
-  auth: jest.fn().mockReturnValue({
-    verifyIdToken: jest.fn().mockResolvedValue({
-      uid: 'test-uid',
-      email: 'test@example.com',
-      displayName: 'Test User'
-    })
-  }),
-  firestore: jest.fn().mockReturnValue({
-    collection: jest.fn().mockReturnThis(),
-    doc: jest.fn().mockReturnThis(),
-    get: jest.fn().mockResolvedValue({
-      exists: false,
-      data: jest.fn().mockReturnValue(null)
-    }),
-    set: jest.fn().mockResolvedValue(),
-    update: jest.fn().mockResolvedValue()
-  })
-}));
+describe('Auth API', () => {
+  const mockUser = {
+    uid: 'test-uid',
+    email: 'test@example.com',
+    displayName: 'Test User'
+  };
 
-describe('Auth Routes', () => {
+  const mockToken = 'valid-token';
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('POST /api/auth/login', () => {
-    it('should return success message', async () => {
+    it('should authenticate user with valid token', async () => {
       const response = await request(app)
         .post('/api/auth/login')
+        .set('Authorization', `Bearer ${mockToken}`)
         .expect(200);
 
-      expect(response.body).toEqual({
-        message: 'Login successful'
-      });
-    });
-  });
-
-  describe('POST /api/auth/profile', () => {
-    it('should create a new user profile', async () => {
-      const mockUserData = {
-        displayName: 'Test User',
-        phoneNumber: '1234567890'
-      };
-
-      const response = await request(app)
-        .post('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .send(mockUserData)
-        .expect(201);
-
-      expect(response.body).toEqual({
-        message: 'User profile created successfully',
+      expect(response.body).toMatchObject({
+        message: 'Authentication successful',
         user: {
-          uid: 'test-uid',
-          email: 'test@example.com',
-          displayName: 'Test User',
-          phoneNumber: '1234567890'
+          uid: mockUser.uid,
+          email: mockUser.email,
+          displayName: mockUser.displayName
         }
       });
+    });
 
-      expect(admin.firestore().collection).toHaveBeenCalledWith('User');
-      expect(admin.firestore().doc).toHaveBeenCalledWith('test-uid');
-      expect(admin.firestore().set).toHaveBeenCalledWith({
-        displayName: 'Test User',
-        phoneNumber: '1234567890',
-        email: 'test@example.com'
+    it('should reject invalid token', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .set('Authorization', 'Bearer invalid-token')
+        .expect(401);
+
+      expect(response.body).toMatchObject({
+        error: 'Authentication failed'
       });
     });
 
-    it('should return 409 if profile already exists', async () => {
-      admin.firestore().get.mockResolvedValueOnce({
-        exists: true
-      });
-
-      const mockUserData = {
-        displayName: 'Test User',
-        phoneNumber: '1234567890'
-      };
-
+    it('should handle missing token', async () => {
       const response = await request(app)
-        .post('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .send(mockUserData)
-        .expect(409);
+        .post('/api/auth/login')
+        .expect(401);
 
-      expect(response.body).toEqual({
-        error: 'User profile already exists'
-      });
-    });
-
-    it('should handle database errors', async () => {
-      admin.firestore().get.mockRejectedValueOnce(new Error('Database error'));
-
-      const mockUserData = {
-        displayName: 'Test User',
-        phoneNumber: '1234567890'
-      };
-
-      const response = await request(app)
-        .post('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .send(mockUserData)
-        .expect(500);
-
-      expect(response.body).toEqual({
-        error: 'Failed to create user profile',
-        details: 'Database error'
+      expect(response.body).toMatchObject({
+        error: 'No token provided'
       });
     });
   });
 
   describe('GET /api/auth/profile', () => {
-    it('should return existing user profile', async () => {
-      admin.firestore().get.mockResolvedValueOnce({
-        exists: true,
-        data: jest.fn().mockReturnValue({
-          displayName: 'Test User',
-          email: 'test@example.com',
-          phoneNumber: '1234567890'
-        })
-      });
-
+    it('should return user profile for authenticated user', async () => {
       const response = await request(app)
         .get('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
+        .set('Authorization', `Bearer ${mockToken}`)
         .expect(200);
 
-      expect(response.body).toEqual({
-        displayName: 'Test User',
-        email: 'test@example.com',
-        phoneNumber: '1234567890'
+      expect(response.body).toMatchObject({
+        profile: {
+          uid: mockUser.uid,
+          email: mockUser.email,
+          displayName: mockUser.displayName
+        }
       });
     });
 
-    it('should create and return profile for new user', async () => {
+    it('should handle unauthorized access', async () => {
       const response = await request(app)
         .get('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .expect(200);
+        .set('Authorization', 'Bearer invalid-token')
+        .expect(401);
 
-      expect(response.body).toEqual({
-        displayName: 'Test User',
-        email: 'test@example.com',
-        phoneNumber: ''
-      });
-
-      expect(admin.firestore().set).toHaveBeenCalledWith({
-        displayName: 'Test User',
-        email: 'test@example.com',
-        phoneNumber: ''
-      });
-    });
-
-    it('should handle database errors', async () => {
-      admin.firestore().get.mockRejectedValueOnce(new Error('Database error'));
-
-      const response = await request(app)
-        .get('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .expect(500);
-
-      expect(response.body).toEqual({
-        error: 'Failed to get user profile'
+      expect(response.body).toMatchObject({
+        error: 'Authentication failed'
       });
     });
   });
 
   describe('PUT /api/auth/profile', () => {
-    it('should update user profile', async () => {
-      // Mock an existing profile
-      admin.firestore().get.mockResolvedValueOnce({
-        exists: true,
-        data: jest.fn().mockReturnValue({
-          displayName: 'Old Name',
-          phoneNumber: '1234567890'
-        })
-      });
+    const updatedProfile = {
+      displayName: 'Updated Name',
+      phoneNumber: '1234567890'
+    };
 
-      // Mock the updated profile
-      admin.firestore().get.mockResolvedValueOnce({
-        exists: true,
-        data: jest.fn().mockReturnValue({
-          displayName: 'Updated User',
-          phoneNumber: '0987654321',
-          updatedAt: new Date().toISOString()
-        })
+    it('should update user profile', async () => {
+      admin.auth().updateUser = jest.fn().mockResolvedValueOnce({
+        ...mockUser,
+        ...updatedProfile
       });
 
       const response = await request(app)
         .put('/api/auth/profile')
-        .set('Authorization', 'Bearer test-token')
-        .send({
-          displayName: 'Updated User',
-          phoneNumber: '0987654321'
-        })
+        .set('Authorization', `Bearer ${mockToken}`)
+        .send(updatedProfile)
         .expect(200);
 
-      // Verify the response structure
-      expect(response.body.message).toBe('Profile updated successfully');
-      expect(response.body.user.displayName).toBe('Updated User');
-      expect(response.body.user.phoneNumber).toBe('0987654321');
-      
-      // Verify that updatedAt is a valid ISO date string
-      const updatedAt = new Date(response.body.user.updatedAt);
-      expect(updatedAt.toString()).not.toBe('Invalid Date');
-    });
-
-    it('should return 404 if profile not found', async () => {
-      admin.firestore().get.mockResolvedValueOnce({
-        exists: false
-      });
-
-      const mockUserData = {
-        displayName: 'Updated User',
-        phoneNumber: '0987654321'
-      };
-
-      const response = await request(app)
-        .put('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .send(mockUserData)
-        .expect(404);
-
-      expect(response.body).toEqual({
-        error: 'User profile not found'
+      expect(response.body).toMatchObject({
+        message: 'Profile updated successfully',
+        profile: {
+          ...mockUser,
+          ...updatedProfile
+        }
       });
     });
 
-    it('should handle database errors', async () => {
-      admin.firestore().get.mockRejectedValueOnce(new Error('Database error'));
-
-      const mockUserData = {
-        displayName: 'Updated User',
-        phoneNumber: '0987654321'
-      };
-
+    it('should handle validation errors', async () => {
       const response = await request(app)
         .put('/api/auth/profile')
-        .set('Authorization', 'Bearer valid-token')
-        .send(mockUserData)
-        .expect(500);
+        .set('Authorization', `Bearer ${mockToken}`)
+        .send({
+          displayName: '' // Invalid empty name
+        })
+        .expect(400);
 
-      expect(response.body).toEqual({
-        error: 'Failed to update user profile',
-        details: 'Database error'
+      expect(response.body).toMatchObject({
+        error: 'Invalid profile data'
+      });
+    });
+
+    it('should handle unauthorized profile update', async () => {
+      const response = await request(app)
+        .put('/api/auth/profile')
+        .set('Authorization', 'Bearer invalid-token')
+        .send(updatedProfile)
+        .expect(401);
+
+      expect(response.body).toMatchObject({
+        error: 'Authentication failed'
       });
     });
   });
-}); 
+});

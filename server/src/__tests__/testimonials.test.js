@@ -1,177 +1,213 @@
+const { describe, test, expect, beforeEach, afterEach } = require('@jest/globals');
 const request = require('supertest');
-const express = require('express');
+const app = require('../tests/setup');
+const { db } = require('../config/firebase-config');
 
-// Create a simple express app for testing
-const app = express();
-app.use(express.json());
-const router = express.Router();
-
-// Error routes for testing
-router.get('/error', (req, res) => {
-  throw new Error('Test error');
-});
-
-router.post('/error', (req, res) => {
-  throw new Error('Test error');
-});
-
-router.patch('/error/status', (req, res) => {
-  throw new Error('Test error');
-});
-
-// Simple testimonials routes
-router.get('/', (req, res) => {
-  try {
-    res.json({ message: 'Testimonials retrieved successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch testimonials' });
-  }
-});
-
-router.post('/', (req, res) => {
-  try {
-    const { name, email, rating, comment, serviceType } = req.body;
-    if (!name || !email || !rating || !comment || !serviceType) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-    if (rating < 1 || rating > 5) {
-      return res.status(400).json({ error: 'Rating must be between 1 and 5' });
-    }
-    if (!email.includes('@')) {
-      return res.status(400).json({ error: 'Invalid email format' });
-    }
-    res.status(201).json({ message: 'Testimonial created successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create testimonial' });
-  }
-});
-
-router.patch('/:id/status', (req, res) => {
-  try {
-    const { status } = req.body;
-    if (!status || !['approved', 'rejected'].includes(status)) {
-      return res.status(400).json({ error: 'Invalid status' });
-    }
-    res.json({ message: 'Testimonial status updated successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update testimonial status' });
-  }
-});
-
-app.use('/testimonials', router);
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  res.status(500).json({ error: err.message });
-});
-
-describe('Testimonials Routes', () => {
-  describe('GET /testimonials', () => {
-    it('should return success message', async () => {
-      const response = await request(app)
-        .get('/testimonials')
-        .expect(200);
-
-      expect(response.body).toEqual({ message: 'Testimonials retrieved successfully' });
-    });
-
-    it('should handle errors', async () => {
-      const response = await request(app)
-        .get('/testimonials/error')
-        .expect(500);
-
-      expect(response.body).toEqual({ error: 'Test error' });
-    });
-  });
-
-  describe('POST /testimonials', () => {
-    const validTestimonial = {
-      name: 'John Doe',
-      email: 'john@example.com',
-      rating: 5,
-      comment: 'Great service!',
-      serviceType: 'Full Detail'
+describe('Testimonials API', () => {
+    const mockTestimonial = {
+        name: 'Test User',
+        email: 'test@example.com',
+        rating: 5,
+        comment: 'Great service!',
+        serviceType: 'Full Detail'
     };
 
-    it('should create a testimonial when all fields are provided', async () => {
-      const response = await request(app)
-        .post('/testimonials')
-        .send(validTestimonial)
-        .expect(201);
-
-      expect(response.body).toEqual({ message: 'Testimonial created successfully' });
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should return 400 when required fields are missing', async () => {
-      const response = await request(app)
-        .post('/testimonials')
-        .send({
-          name: 'John Doe',
-          email: 'john@example.com'
-        })
-        .expect(400);
+    describe('GET /api/testimonials', () => {
+        it('should return all testimonials', async () => {
+            const mockDocs = [
+                {
+                    id: '1',
+                    data: () => ({
+                        ...mockTestimonial,
+                        createdAt: new Date().toISOString(),
+                        status: 'approved'
+                    })
+                }
+            ];
 
-      expect(response.body).toEqual({ error: 'Missing required fields' });
+            db.collection().orderBy.mockReturnThis();
+            db.collection().get.mockResolvedValueOnce({
+                docs: mockDocs,
+                forEach: function(callback) {
+                    this.docs.forEach(doc => callback(doc));
+                }
+            });
+
+            const response = await request(app)
+                .get('/api/testimonials')
+                .expect(200);
+
+            expect(response.body).toHaveProperty('testimonials');
+            expect(response.body.testimonials).toHaveLength(1);
+            expect(response.body.testimonials[0]).toMatchObject({
+                id: '1',
+                name: 'Test User',
+                rating: 5,
+                comment: 'Great service!',
+                status: 'approved'
+            });
+            expect(response.body).toHaveProperty('pagination');
+            expect(response.body.pagination).toMatchObject({
+                total_records: 1,
+                total_pages: 1,
+                current_page_number: 1,
+                page_size: 10
+            });
+        });
+
+        it('should handle database errors', async () => {
+            db.collection().orderBy.mockReturnThis();
+            db.collection().get.mockRejectedValueOnce(new Error('Database error'));
+
+            const response = await request(app)
+                .get('/api/testimonials')
+                .expect(500);
+
+            expect(response.body).toHaveProperty('message', 'Failed to fetch testimonials');
+            expect(response.body).toHaveProperty('error');
+        });
     });
 
-    it('should return 400 for invalid rating', async () => {
-      const response = await request(app)
-        .post('/testimonials')
-        .send({
-          ...validTestimonial,
-          rating: 6
-        })
-        .expect(400);
+    describe('POST /api/testimonials', () => {
+        it('should create a new testimonial', async () => {
+            const mockDoc = {
+                id: 'test-id'
+            };
 
-      expect(response.body).toEqual({ error: 'Rating must be between 1 and 5' });
+            db.collection().add.mockResolvedValueOnce(mockDoc);
+
+            const response = await request(app)
+                .post('/api/testimonials')
+                .send(mockTestimonial)
+                .expect(201);
+
+            expect(response.body).toHaveProperty('message', 'Testimonial submitted successfully');
+            expect(response.body).toHaveProperty('testimonial');
+            expect(response.body.testimonial).toMatchObject({
+                id: 'test-id',
+                ...mockTestimonial
+            });
+        });
+
+        it('should handle missing required fields', async () => {
+            const response = await request(app)
+                .post('/api/testimonials')
+                .send({
+                    name: 'Test User'
+                    // Missing email, rating, and comment
+                })
+                .expect(400);
+
+            expect(response.body).toHaveProperty('message', 'Required fields are missing');
+            expect(response.body).toHaveProperty('missing');
+            expect(response.body.missing).toContain('email');
+            expect(response.body.missing).toContain('rating');
+            expect(response.body.missing).toContain('comment');
+        });
+
+        it('should handle invalid rating', async () => {
+            const response = await request(app)
+                .post('/api/testimonials')
+                .send({
+                    ...mockTestimonial,
+                    rating: 6 // Invalid rating > 5
+                })
+                .expect(400);
+
+            expect(response.body).toHaveProperty('message', 'Rating must be between 1 and 5');
+        });
+
+        it('should handle database errors', async () => {
+            db.collection().add.mockRejectedValueOnce(new Error('Database error'));
+
+            const response = await request(app)
+                .post('/api/testimonials')
+                .send(mockTestimonial)
+                .expect(500);
+
+            expect(response.body).toHaveProperty('message', 'Failed to submit testimonial');
+            expect(response.body).toHaveProperty('error');
+        });
     });
 
-    it('should return 400 for invalid email format', async () => {
-      const response = await request(app)
-        .post('/testimonials')
-        .send({
-          ...validTestimonial,
-          email: 'invalid-email'
-        })
-        .expect(400);
+    describe('PATCH /api/testimonials/:id/status', () => {
+        it('should update testimonial status', async () => {
+            const mockDoc = {
+                exists: true,
+                data: () => ({
+                    ...mockTestimonial,
+                    status: 'pending'
+                })
+            };
 
-      expect(response.body).toEqual({ error: 'Invalid email format' });
+            db.collection().doc.mockReturnThis();
+            db.collection().doc().get.mockResolvedValueOnce(mockDoc);
+            db.collection().doc().update.mockResolvedValueOnce();
+
+            const response = await request(app)
+                .patch('/api/testimonials/1/status')
+                .send({ status: 'approved' })
+                .expect(200);
+
+            expect(response.body).toHaveProperty('message', 'Testimonial status updated successfully');
+        });
+
+        it('should handle invalid status', async () => {
+            const response = await request(app)
+                .patch('/api/testimonials/1/status')
+                .send({ status: 'invalid' })
+                .expect(400);
+
+            expect(response.body).toHaveProperty('message', 'Invalid status');
+        });
+
+        it('should handle non-existent testimonial', async () => {
+            db.collection().doc.mockReturnThis();
+            db.collection().doc().get.mockRejectedValueOnce(new Error('Document not found'));
+
+            const response = await request(app)
+                .patch('/api/testimonials/999/status')
+                .send({ status: 'approved' })
+                .expect(404);
+
+            expect(response.body).toHaveProperty('message', 'Testimonial not found');
+        });
     });
 
-    it('should handle errors', async () => {
-      const response = await request(app)
-        .post('/testimonials/error')
-        .expect(500);
+    describe('DELETE /api/testimonials/:id', () => {
+        it('should delete a testimonial', async () => {
+            const mockDoc = {
+                exists: true,
+                data: () => ({
+                    ...mockTestimonial,
+                    status: 'pending'
+                })
+            };
 
-      expect(response.body).toEqual({ error: 'Test error' });
+            db.collection().doc.mockReturnThis();
+            db.collection().doc().get.mockResolvedValueOnce(mockDoc);
+            db.collection().doc().delete.mockResolvedValueOnce();
+
+            const response = await request(app)
+                .delete('/api/testimonials/1')
+                .expect(200);
+
+            expect(response.body).toHaveProperty('message', 'Testimonial deleted successfully');
+        });
+
+        it('should handle non-existent testimonial', async () => {
+            db.collection().doc.mockReturnThis();
+            db.collection().doc().get.mockRejectedValueOnce(new Error('Document not found'));
+
+            const response = await request(app)
+                .delete('/api/testimonials/999')
+                .expect(404);
+
+            expect(response.body).toHaveProperty('message', 'Testimonial not found');
+        });
     });
-  });
-
-  describe('PATCH /testimonials/:id/status', () => {
-    it('should update testimonial status when valid', async () => {
-      const response = await request(app)
-        .patch('/testimonials/123/status')
-        .send({ status: 'approved' })
-        .expect(200);
-
-      expect(response.body).toEqual({ message: 'Testimonial status updated successfully' });
-    });
-
-    it('should return 400 for invalid status', async () => {
-      const response = await request(app)
-        .patch('/testimonials/123/status')
-        .send({ status: 'invalid' })
-        .expect(400);
-
-      expect(response.body).toEqual({ error: 'Invalid status' });
-    });
-
-    it('should handle errors', async () => {
-      const response = await request(app)
-        .patch('/testimonials/error/status')
-        .expect(500);
-
-      expect(response.body).toEqual({ error: 'Test error' });
-    });
-  });
-}); 
+});
