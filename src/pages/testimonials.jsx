@@ -263,7 +263,8 @@ const Testimonials = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('http://localhost:5001/api/testimonials');
+      const response = await axios.get('https://the-detailers-edge-4toh.onrender.com/api/testimonials');
+      //const response = await axios.get('http://localhost:5001/api/testimonials');
       setTestimonials(response.data.testimonials || []);
     } catch (err) {
       console.error('Error fetching testimonials:', err);
@@ -295,7 +296,7 @@ const Testimonials = () => {
     setSuccess(false);
 
     try {
-      await axios.post('http://localhost:5001/api/testimonials', formData);
+      await axios.post('https://the-detailers-edge-4toh.onrender.com/api/testimonials', formData);
       setSuccess(true);
       setFormData({
         name: '',
