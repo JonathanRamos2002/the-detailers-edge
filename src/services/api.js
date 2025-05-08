@@ -2,8 +2,8 @@ import { auth } from '../firebase';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 // Set API URL based on environment
-// const API_URL = 'https://the-detailers-edge-4toh.onrender.com/api'
-const API_URL = 'http://localhost:5001/api'; // local host
+const API_URL = 'https://the-detailers-edge-4toh.onrender.com/api'
+// const API_URL = 'http://localhost:5001/api'; // local host
 
 const getAuthToken = async () => {
   const user = auth.currentUser;
