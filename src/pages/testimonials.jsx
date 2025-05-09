@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaStar } from 'react-icons/fa';
 import axios from 'axios';
+import Footer from '../components/Footer';
 
 const Container = styled.div`
   max-width: 1200px;
@@ -333,6 +334,7 @@ const Testimonials = () => {
   }
 
   return (
+    <>
     <Container>
       <Header>
         <Title>Client Testimonials</Title>
@@ -451,6 +453,8 @@ const Testimonials = () => {
         </EmptyState>
       )}
     </Container>
+    <Footer />
+    </>
   );
 };
 

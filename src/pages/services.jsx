@@ -6,6 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 import colors from '../styles/colors';
+import Footer from '../components/Footer';
 
 const ServicesContainer = styled.div`
   max-width: 1200px;
@@ -216,6 +217,7 @@ const Services = () => {
   }
 
   return (
+    <>
     <ServicesContainer>
       <ServicesHeader>
         <h1>Our Services</h1>
@@ -247,6 +249,8 @@ const Services = () => {
         ))}
       </ServicesGrid>
     </ServicesContainer>
+    <Footer />
+    </>
   );
 };
 

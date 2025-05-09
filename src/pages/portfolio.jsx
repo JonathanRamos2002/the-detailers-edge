@@ -3,6 +3,7 @@ import styled from "styled-components";
 import colors from "../styles/colors";
 import axios from "axios";
 import { API_BASE_URL } from "../config/api";
+import Footer from "../components/Footer";
 
 const PortfolioContainer = styled.div`
     max-width: 1400px;
@@ -110,6 +111,7 @@ const Portfolio = () => {
     }
 
     return (
+        <>
         <PortfolioContainer>
             <PortfolioHeader>
                 <h1>Our Portfolio</h1>
@@ -127,6 +129,8 @@ const Portfolio = () => {
                 ))}
             </PortfolioGrid>
         </PortfolioContainer>
+        <Footer />  
+        </>
     );
 };
 

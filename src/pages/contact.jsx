@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Footer from "../components/Footer";
 
 const Container = styled.div`
   max-width: 600px;
@@ -141,6 +142,7 @@ const Contact = () => {
   };
 
   return (
+    <>
     <Container>
       <Title>Contact Us</Title>
       
@@ -203,6 +205,8 @@ const Contact = () => {
         </Button>
       </Form>
     </Container>
+    <Footer />
+    </>
   );
 };
 

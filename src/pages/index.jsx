@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom"
 import sampleImage from "../assets/hero.jpg";
 import colors from "../styles/colors"; 
+import Footer from "../components/Footer";
 
 const Container = styled.div`
     display: flex;
@@ -188,6 +189,7 @@ const Home = () => {
                     </InstagramEmbed>
                 </InstagramGrid>
             </InstagramSection>
+            <Footer />
         </>
     );
 };
